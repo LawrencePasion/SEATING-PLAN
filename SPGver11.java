@@ -236,9 +236,6 @@ public class SPGver11 {
             return "Name can't be blank.";
         } else if (name.length() > MAX_NAME_LENGTH) {
             return "Name is too long (max " + MAX_NAME_LENGTH + " characters).";
-        } else if (name.equalsIgnoreCase("done")) {
-            return "'done' is reserved, pick another name.";
-        }
         for (int i = 0; i < seats.length; i++) {
             if (i != skip && seats[i] != null && seats[i].equalsIgnoreCase(name)) {
                 return "That name is already used, add a surname or initial.";
