@@ -5,13 +5,6 @@ import java.util.Random;
 import java.util.Scanner;
 
 // Classroom & Seating Plan Generator (console app)
-//
-// Compile: javac SPGver13.java
-// Run:     java SPGver13
-//
-// DRAWING: the ASCII art is NOT to scale. Desks, chairs, aisles, etc. are drawn at
-// fixed sizes. The measurements only decide how many columns/rows fit in the room.
-//
 // ROOM WIDTH  = left-to-right (the whiteboard wall)  -> horizontal, the long side
 // ROOM LENGTH = front-to-back                        -> vertical
 public class SPGver13 {
@@ -99,9 +92,9 @@ public class SPGver13 {
 
         String furniture;
         if (armchair) {
-            furniture = "armchairs " + chairCm + " x " + chairCm + " cm";
+            furniture = "armchairs " + chairCm + " x " + chairCm + " cm";   
         } else {
-            furniture = "desks " + deskWidthCm + " x " + deskDepthCm + " cm";
+            furniture = "desks " + deskWidthCm + " x " + deskDepthCm + " cm";   
         }
         if (!readYesNo("Use default sizes? (room " + roomText() + ", " + furniture + ") (y/n): ")) {
             if (armchair) {
@@ -116,10 +109,10 @@ public class SPGver13 {
             teacherWidthCm = readInt("Teacher's table WIDTH in cm (80-250): ", 80, 250);
             teacherDepthCm = readInt("Teacher's table DEPTH in cm (40-120): ", 40, 120);
 
-            boolean roomFits = false;
+            boolean roomFits = false;   //create variable roomFits(switch/flag)
             while (!roomFits) {  //nested while loop in the if: if the user inputs n to default size, keep asking until the sizes are valid
-                roomWidthCm = (int) (readDouble("Room WIDTH in meters (left to right, along the whiteboard) (3-20): ", 3, 20) * 100 + 0.5);
-                roomLengthCm = (int) (readDouble("Room LENGTH in meters (front to back) (3-20): ", 3, 20) * 100 + 0.5);
+                roomWidthCm = (int) (readDouble("Room WIDTH in meters (left to right, along the whiteboard) (3-20): ", 3, 20) * 100 + 0.5); //equation of m to cm
+                roomLengthCm = (int) (readDouble("Room LENGTH in meters (front to back) (3-20): ", 3, 20) * 100 + 0.5); //(int) truncates decimal vals for final result
                 if (maxRows() >= 1) {
                     roomFits = true;
                 } else {
@@ -134,20 +127,21 @@ public class SPGver13 {
         int maxStudents = Math.min(MAX_STUDENTS, capacity); //compares which is less for it to actually fit
 
         System.out.printf("%nThis room fits at most %d columns x %d rows = %d seats.%n", maxCols, maxRows, capacity); // show physical limits of room
-        if (maxCols < MAX_COLUMNS) {    //
+                            //%n for new line, %d placeholder for ints
+        if (maxCols < MAX_COLUMNS) {    
             System.out.println("Only " + maxCols + " of the usual " + MAX_COLUMNS + " columns fit across the room WIDTH."); 
         }   //notifies user if columns are below the usual
 
-        int students = readInt("Number of students (1-" + maxStudents + "): ", 1, maxStudents);
+        int students = readInt("Number of students (1-" + maxStudents + "): ", 1, maxStudents); //asks user for # of students
 
         // ask for every student's name (seats is temporarily sized to the student count so checkName can catch duplicates)
-        seats = new String[students];
+        seats = new String[students];   //creates an array named seats
         int entered = 0;    // how many names have been accepted so far
         while (entered < students) {
             String name = readText("Name of student " + (entered + 1) + " of " + students + ": ");
             String problem = checkName(name, entered);
-            if (!problem.isEmpty()) {
-                System.out.println(problem);    // entered doesn't go up, so this student is asked again
+            if (!problem.isEmpty()) {   //isEmpty is built in
+                System.out.println(problem);    // entered doesn't go up, so this student is asked again, and it shows what went wrong
             } else {
                 seats[entered] = name;
                 entered++;
@@ -164,18 +158,18 @@ public class SPGver13 {
         }
 
         int minCols = (totalSeats + maxRows - 1) / maxRows;      // ceil(totalSeats / maxRows): fewest columns that keep rows within the room
-        int maxColsAllowed = Math.min(maxCols, totalSeats);      // no need for more columns than seats
+        int maxColsAllowed = Math.min(maxCols, totalSeats);      // no need for more columns than there are to accomodate seats
         cols = readInt("How many columns? (" + minCols + "-" + maxColsAllowed + "): ", minCols, maxColsAllowed);
 
         // rows are worked out automatically; the last row may be only partly filled (seats fill left to right)
-        rows = (totalSeats + cols - 1) / cols;
-        int lastRowSeats = totalSeats - (rows - 1) * cols;
-        if (lastRowSeats < cols) {
+        rows = (totalSeats + cols - 1) / cols;  //formula used for rounding up, final row added for remaining students after filling up the latest row
+        int lastRowSeats = totalSeats - (rows - 1) * cols;  //find out how many seats in the last row
+        if (lastRowSeats < cols) {  //checks if last row is partially filled
             System.out.println("The last row (R" + rows + ") will only have " + lastRowSeats + " seat(s); the remaining spots stay empty (no desk or chair).");
         }
-
-        // grow the seat list to the real seat count, keeping the names already entered
-        String[] biggerSeats = new String[totalSeats];   // the new slots start as null (empty)
+        //match the total physical seats in the room (which could be more than the number of students, meaning there will be empty desks or chairs)
+        // grow the seat list to the real seat count, keeping the names already entered. like if there are more seats user inputted than the # of students
+        String[] biggerSeats = new String[totalSeats];   // the new slots start as null (empty). 
         for (int i = 0; i < seats.length; i++) {
             biggerSeats[i] = seats[i];
         }
@@ -186,7 +180,9 @@ public class SPGver13 {
         showPlan("SEATING PLAN");
         editMenu();
     }
-
+//=======================================END OF PART 1======================================================================================
+//=======================================END OF PART 1======================================================================================
+//=======================================END OF PART 1======================================================================================
     static void resetDefaults() {   
         roomWidthCm = 1100;     // 11 m wide  (left-right)
         roomLengthCm = 900;     // 9 m long   (front-back)  -> landscape
@@ -200,7 +196,7 @@ public class SPGver13 {
     }
     //METHODS USED EARLIER
     // Capacity is worked out from the real measurements (the drawing itself is not to scale).
-    static int maxCols() {
+    static int maxCols() {  //calculates for max rows based of width(horizontal)
         int n = 0;
         while (n < MAX_COLUMNS && gridChars(n + 1) <= toChars(roomWidthCm)) {   //starts at 0 increasing to find max 0 based indexing, and if the columns would fit, 2nd part isnt 0 based indexing thats why its <=
             n++;
@@ -208,26 +204,26 @@ public class SPGver13 {
         return n;
     }
 
-    static int maxRows() {  //calculates for the max rows based off the max length(height)
+    static int maxRows() {  //calculates for the max rows based off the length(height/vertical)
         int n = 0;
-        while (linesNeeded(n + 1) <= toLines(roomLengthCm)) {   
+        while (linesNeeded(n + 1) <= toLines(roomLengthCm)) { //checks if lines exceed the Length, if it does or is equal to it then it stops 
             n++;
         }
         return n;
     }
 
-    // drawn width of n columns
+    // Calculates the total horizontal character width needed for n columns (desks + aisles)
     static int gridChars(int n) {   //how many horizontal text will take up screen
         return n * deskChars() + (n - 1) * toChars(aisleCm);
     }
 
     // drawn height of: whiteboard + teacher + front gap + n rows (desk + desk/chair gap + chair) + row gaps + back gap
-    static int linesNeeded(int n) { //hm vertical lines
-        return 1 + teacherLines() + toLines(FRONT_CLEAR_CM) + n * (deskLines() + gapLines() + chairLines())
+    static int linesNeeded(int n) { //hm vertical lines(front 2 back)
+        return 1 + teacherLines() + toLines(FRONT_CLEAR_CM) + n * (deskLines() + gapLines() + chairLines()) //1 is the top line of wall btw
                 + (n - 1) * toLines(rowGapCm) + toLines(BACK_CLEAR_CM);
     }
 
-    static String roomText() {
+    static String roomText() {  //converts measurements of cm into meters
         return "WIDTH " + roomWidthCm / 100.0 + " m (left-right) x LENGTH " + roomLengthCm / 100.0 + " m (front-back)";
     }
 
@@ -258,7 +254,7 @@ public class SPGver13 {
     }
 
     // "" if the name is fine, otherwise what is wrong (seat skip may keep its own name)
-    static String checkName(String name, int skip) {
+    static String checkName(String name, int skip) {    //skip parameter tells it which index position in the array to ignore during duplicate checks
         if (name.isEmpty()) {
             return "Name can't be blank.";
         } else if (name.length() > MAX_NAME_LENGTH) {
@@ -267,13 +263,13 @@ public class SPGver13 {
         for (int i = 0; i < seats.length; i++) {
             if (i != skip) {                        // don't compare a seat with itself
                 if (seats[i] != null) {             // check for null FIRST: an empty seat has no name to compare
-                    if (seats[i].equalsIgnoreCase(name)) {
+                    if (seats[i].equalsIgnoreCase(name)) {  //checks 4 names that r basically the same but with diff capitalizations
                         return "That name is already used, add a surname or initial.";
                     }
                 }
             }
         }
-        return "";
+        return ""; // leaves empty string if name is completely valid
     }
 
     static int countStudents() {
@@ -297,11 +293,11 @@ public class SPGver13 {
     }
 
     static int toChars(int cm) {
-        return (cm + CM_PER_CHAR - 1) / CM_PER_CHAR;     // rounded up
+        return (cm + CM_PER_CHAR - 1) / CM_PER_CHAR;     //Converts cm into how many character spaces it takes horizontally (rounded up)
     }
 
     static int toLines(int cm) {
-        return (cm + CM_PER_LINE - 1) / CM_PER_LINE;     // rounded up
+        return (cm + CM_PER_LINE - 1) / CM_PER_LINE;     //Converts cm into how many text lines it takes vertically (rounded up)
     }
 
     // used only for the capacity check (how many columns/rows fit the room)
@@ -339,7 +335,9 @@ public class SPGver13 {
     }
 
     static int teacherLines() { return Math.max(3, toLines(teacherDepthCm)); }
-
+//==============================END OF PART 2========================================================================================
+//==============================END OF PART 2========================================================================================
+//==============================END OF PART 2========================================================================================
     // centers text in a field of the given width (cuts it if too long)
     static String center(String text, int width) {
         if (text.length() >= width) {
@@ -518,7 +516,9 @@ public class SPGver13 {
 
         System.out.println("     " + wall('-', " BACK ") + "  LENGTH (front to back) = " + roomLengthCm / 100.0 + " m");
     }
-
+//=======================================END OF PART 3======================================================================================
+//=======================================END OF PART 3======================================================================================
+//=======================================END OF PART 3======================================================================================
     static void printLegend() {
         int seatsTotal = seats.length;
         System.out.println("\n--- LEGEND (drawing is NOT to scale) ---");
@@ -603,7 +603,7 @@ public class SPGver13 {
         return value;
     }
 
-    static double readDouble(String prompt, double min, double max) {
+    static double readDouble(String prompt, double min, double max) {   //same as readInt but this time with decimal vals
         double value = 0;
         boolean valid = false;
         while (!valid) {
@@ -625,19 +625,19 @@ public class SPGver13 {
     }
 
     static String readText(String prompt) {
-        System.out.print(prompt);
-        return sc.nextLine().trim();
+        System.out.print(prompt);   //print instead of println so cursor remains on the question
+        return sc.nextLine().trim();    //.trim cuts any spaces, return sends those 2 at the same line with their respective sequence
     }
 
-    static boolean readYesNo(String prompt) {
-        boolean answered = false;
-        boolean result = false;
-        while (!answered) {
-            String a = readText(prompt);
-            if (a.equalsIgnoreCase("y") || a.equalsIgnoreCase("yes")) {
+    static boolean readYesNo(String prompt) {   //designed to ask the user a y/n question 
+        boolean answered = false;   //loops as long as its false
+        boolean result = false;     //stores outcome: true for yes, false for no. default is false
+        while (!answered) { //keeps loop running until valid answer, default false turns into true due to !
+            String a = readText(prompt);    //variable a is used to call readText method
+            if (a.equalsIgnoreCase("y") || a.equalsIgnoreCase("yes")) { //.equalsIgnorCase accepts uppercase or lowercase
                 result = true;
                 answered = true;
-            } else if (a.equalsIgnoreCase("n") || a.equalsIgnoreCase("no")) {
+            } else if (a.equalsIgnoreCase("n") || a.equalsIgnoreCase("no")) {   
                 result = false;
                 answered = true;
             } else {
